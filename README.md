@@ -7,8 +7,6 @@ Este repositório contém o código para treinar e avaliar um modelo Wav2Vec2 pr
 - [Visão Geral](#visão-geral)
 - [Estrutura de Diretórios](#estrutura-de-diretórios)
 - [Requisitos](#requisitos)
-- [Preparação do Conjunto de Dados](#preparação-do-conjunto-de-dados)
-- [Execução](#execução)
 - [Referências](#referências)
 
 ## Visão Geral
@@ -59,11 +57,6 @@ Para instalar as dependências é necessário executar o seguinte:
 pip install datasets transformers torch numpy matplotlib evaluate
 ```
 
-## Preparação do Conjunto de Dados
-
-O conjunto de dados Medical ASR Recording Dataset é acedível diretamente da Hugging Face Hub. É necessário executar os scripts de preparação para dividir o conjunto de dados e pré-processar os textos de transcrição.
-
-## Execução
 
 ## Referências
 - [Hugging Face](https://huggingface.co/facebook/wav2vec2-base-100h)
