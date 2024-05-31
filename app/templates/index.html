@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="{{ url_for('static',filename='style.css') }}">
+        <link href="https://fonts.googleapis.com/css?family=Shadows+Into+Light" rel="stylesheet">
+        <title>Speech Recognition</title>
+    </head>
+    <body>
+        <h1 style="text-align: center; margin-top: 5%;">Speech Recognition</h1>
+
+
+        <div class="container">
+            <h2 style="text-align: center;">Select Audio File</h2>
+
+            <select class="select" name="audio_files" id="audio" onchange="selectAudio()">
+                <optgroup label="Audio Files">
+                    {% for idx, file in enumerate(audio_files) %}
+                        <option value="{{ idx }}">{{ file }}</option>
+                    {% endfor %}
+                </optgroup>
+            </select>
+
+            <div class="audio">
+                <audio id="audioPlayer" controls>
+                    <source id="audioSource" src="{{ url_for('static',filename=audio) }}" type="audio/wav">
+                    Your browser does not support the audio element.
+                </audio>
+            </div>
+    
+            <h3 style="margin: 0 auto;">Original Transcript</h3>
+            <div class="box">
+                <p id="original">{{ original_text | safe }}</p>
+            </div>
+
+            <h3 style="margin: 0 auto;">Predicted Transcript</h3>
+            <div class="box">
+                <p id="predicted">{{ pred_text | safe }}</p>
+            </div>
+            <br>
+            <br>
+        </div>
+
+        <script>
+            function playAudio(idx) {
+                var xhr = new XMLHttpRequest();
+                xhr.open("POST", "/play_audio", true);
+                xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState === 4 && xhr.status === 200) {
+                        document.getElementById("predText" + idx).innerText = xhr.responseText;
+                    }
+                };
+                xhr.send("file_index=" + idx);
+            }
+
+            function selectAudio() {
+                var selectElement = document.getElementById('audio');
+                var audioSourceElement = document.getElementById('audioSource');
+                var selectedFile = selectElement.value;
+                
+
+                var xhr = new XMLHttpRequest();
+                xhr.open("POST", "/audio", true);
+                xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState === 4 && xhr.status === 200) {
+                        var response = JSON.parse(xhr.responseText);
+
+                        audioSourceElement.src = response.url;
+                        var audioPlayer = document.getElementById('audioPlayer');
+                        audioPlayer.load();
+
+                        let highlightedTexts = highlightDifferences(response.original, response.predicted);
+
+                        document.getElementById('original').innerHTML = highlightedTexts.original
+                        document.getElementById('predicted').innerHTML = highlightedTexts.predicted
+                    }
+                };
+                xhr.send("file_index=" + selectedFile);
+            }
+
+            
+            function highlightDifferences(originalText, predictedText) {
+                let originalWords = originalText.split(' ');
+                let predictedWords = predictedText.split(' ');
+
+                let originalHighlighted = [];
+                let predictedHighlighted = [];
+
+                let original_length = originalWords.length;
+                let predicted_length = predictedWords.length;
+
+                let i=0, j=0;
+
+                while ( i < original_length && j < predicted_length ){
+                    if (originalWords[i] == predictedWords[j]){
+                        originalHighlighted.push(originalWords[i]);
+                        predictedHighlighted.push(predictedWords[j]);
+                        i++;
+                        j++;
+                    }
+                    else{
+                        originalHighlighted.push('<span class="highlight-green">' + originalWords[i] + '</span>');
+                        predictedHighlighted.push('<span class="highlight-red">' + predictedWords[j] + '</span>');
+                        
+                        i++;
+                        j++;
+                        if (i < (original_length - 1) && originalWords[i+1] == predictedWords[j]){
+                            originalHighlighted.push('<span class="highlight-green">' + originalWords[i] + '</span>');
+                            i++;
+                        }
+                    }
+                }
+           
+                return {
+                    original: originalHighlighted.join(' '),
+                    predicted: predictedHighlighted.join(' ')
+                };
+            }
+
+        </script>
+    </body>
+</html>

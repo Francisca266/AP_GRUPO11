@@ -1,0 +1,56 @@
+body {
+    background: #1e2440;
+    color: #f2efe2;
+    font-size: 18px;
+    font-family: Georgia, serif;
+}
+
+.select {
+  margin: auto;
+  padding: 0.2rem 1rem;
+  width: 20vw;
+  height: 7%;
+  font-size: 15px;
+}
+
+.audio {
+  margin: auto;
+  padding: 0.2rem 1rem;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  top: 55%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  position:fixed;
+  width: 70%;
+  height: 65%;
+  border: 1px solid #f2efe2;
+  border-radius: 10px;
+  background: #f2efe2;
+  padding: 0.2rem 1rem;
+  color: #1e2440;
+  overflow: scroll;
+}
+
+
+.box {
+  width: 80%;
+  height: 100px;
+  margin: auto;
+  padding: 10px;
+  border: 3px solid #ccc;
+  border-radius: 4px;
+  overflow: scroll;
+}
+
+
+.highlight-green {
+  background-color: lightgreen;
+}
+
+.highlight-red {
+  background-color: lightcoral;
+}
